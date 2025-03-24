@@ -1,10 +1,12 @@
-package com.omergundogdu.bilgeadamecommercebackend.service;
+package com.omergundogdu.bilgeadamecommercebackend.service.impl;
 
-import com.omergundogdu.bilgeadamecommercebackend.dto.CategoryChildResponse;
-import com.omergundogdu.bilgeadamecommercebackend.dto.CategoryRequest;
-import com.omergundogdu.bilgeadamecommercebackend.dto.CategoryResponse;
+import com.omergundogdu.bilgeadamecommercebackend.dto.response.CategoryChildResponse;
+import com.omergundogdu.bilgeadamecommercebackend.dto.request.CategoryRequest;
+import com.omergundogdu.bilgeadamecommercebackend.dto.response.CategoryResponse;
 import com.omergundogdu.bilgeadamecommercebackend.model.Category;
 import com.omergundogdu.bilgeadamecommercebackend.repository.CategoryRepository;
+import com.omergundogdu.bilgeadamecommercebackend.service.read.CategoryReadService;
+import com.omergundogdu.bilgeadamecommercebackend.service.write.CategoryWriteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryReadService, CategoryWriteService {
 
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;

@@ -1,10 +1,11 @@
-package com.omergundogdu.bilgeadamecommercebackend.service;
+package com.omergundogdu.bilgeadamecommercebackend.service.impl;
 
-import com.omergundogdu.bilgeadamecommercebackend.dto.BrandRequest;
-import com.omergundogdu.bilgeadamecommercebackend.dto.BrandResponse;
+import com.omergundogdu.bilgeadamecommercebackend.dto.request.BrandRequest;
+import com.omergundogdu.bilgeadamecommercebackend.dto.response.BrandResponse;
 import com.omergundogdu.bilgeadamecommercebackend.model.Brand;
 import com.omergundogdu.bilgeadamecommercebackend.repository.BrandRepository;
-import com.omergundogdu.bilgeadamecommercebackend.service.BrandService;
+import com.omergundogdu.bilgeadamecommercebackend.service.read.BrandReadService;
+import com.omergundogdu.bilgeadamecommercebackend.service.write.BrandWriteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BrandServiceImpl implements BrandService {
+public class BrandServiceImpl implements BrandReadService, BrandWriteService {
 
     private final BrandRepository brandRepository;
     private final ModelMapper modelMapper;

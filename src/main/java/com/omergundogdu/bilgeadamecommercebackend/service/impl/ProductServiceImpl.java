@@ -1,13 +1,15 @@
-package com.omergundogdu.bilgeadamecommercebackend.service;
+package com.omergundogdu.bilgeadamecommercebackend.service.impl;
 
-import com.omergundogdu.bilgeadamecommercebackend.dto.ProductRequest;
-import com.omergundogdu.bilgeadamecommercebackend.dto.ProductResponse;
+import com.omergundogdu.bilgeadamecommercebackend.dto.request.ProductRequest;
+import com.omergundogdu.bilgeadamecommercebackend.dto.response.ProductResponse;
 import com.omergundogdu.bilgeadamecommercebackend.model.Brand;
 import com.omergundogdu.bilgeadamecommercebackend.model.Category;
 import com.omergundogdu.bilgeadamecommercebackend.model.Product;
 import com.omergundogdu.bilgeadamecommercebackend.repository.BrandRepository;
 import com.omergundogdu.bilgeadamecommercebackend.repository.CategoryRepository;
 import com.omergundogdu.bilgeadamecommercebackend.repository.ProductRepository;
+import com.omergundogdu.bilgeadamecommercebackend.service.read.ProductReadService;
+import com.omergundogdu.bilgeadamecommercebackend.service.write.ProductWriteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements ProductReadService, ProductWriteService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;

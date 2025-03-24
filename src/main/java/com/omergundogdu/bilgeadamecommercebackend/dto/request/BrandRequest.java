@@ -1,4 +1,4 @@
-package com.omergundogdu.bilgeadamecommercebackend.dto;
+package com.omergundogdu.bilgeadamecommercebackend.dto.request;
 
 
 import lombok.*;
