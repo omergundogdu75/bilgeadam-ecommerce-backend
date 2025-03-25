@@ -23,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +72,10 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
 
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getEmail(), Collections.emptyMap());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+
+        String token = jwtUtil.generateToken(user.getEmail(), claims);
 
         return new AuthResponse(token);
     }
@@ -84,9 +89,17 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
                 )
         );
 
-        String token = jwtUtil.generateToken(request.getEmail(), Collections.emptyMap());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+
+        String token = jwtUtil.generateToken(user.getEmail(), claims);
+
         return new AuthResponse(token);
     }
+
 
     @Override
     public TokenRefreshResponse refreshToken(TokenRefreshRequest request) {
@@ -95,8 +108,14 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
 
         refreshTokenWriteableService.verifyExpiration(refreshToken);
 
-        String newAccessToken = jwtUtil.generateToken(refreshToken.getUser().getEmail(), Collections.emptyMap());
+        User user = refreshToken.getUser();
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+
+        String newAccessToken = jwtUtil.generateToken(user.getEmail(), claims);
 
         return new TokenRefreshResponse(newAccessToken, refreshToken.getToken());
     }
+
 }

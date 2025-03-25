@@ -24,9 +24,9 @@ public class OrderServiceImpl implements OrderReadableService, OrderWriteableSer
 
     @Override
     @Transactional
-    public void createOrder(OrderRequest req) {
+    public void createOrder(OrderRequest req, Long userId) {
         Order order = new Order();
-        order.setUserId(req.getUserId());
+        order.setUserId(userId);
         order.setName(req.getShipping().getName());
         order.setEmail(req.getShipping().getEmail());
         order.setAddress(req.getShipping().getAddress());

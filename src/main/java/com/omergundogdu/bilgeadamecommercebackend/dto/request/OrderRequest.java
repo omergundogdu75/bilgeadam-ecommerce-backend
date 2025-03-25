@@ -5,7 +5,6 @@ import java.util.List;
 
 @Data
 public class OrderRequest {
-    private Long userId;
     private ShippingInfo shipping;
     private PaymentInfo payment;
     private List<OrderItemDto> items;
