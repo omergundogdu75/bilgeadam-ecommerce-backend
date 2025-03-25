@@ -8,5 +8,6 @@ import java.util.List;
 public interface CategoryReadService {
     CategoryResponse getCategoryById(Long id);
     List<CategoryResponse> getAllCategories();
+
 }
 

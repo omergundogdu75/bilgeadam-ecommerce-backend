@@ -44,4 +44,22 @@ public class OrderController {
     public List<Order> getAllOrders() {
         return orderReadableService.getAll();
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<Order>> getMyOrders(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token);
+        List<Order> orders = orderReadableService.getAllByUserId(userId);
+        return ResponseEntity.ok(orders);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> cancelOrder(@PathVariable Long id) {
+        orderWriteableService.cancelOrder(id);
+        return ResponseEntity.ok("Sipariş iptal edildi");
+    }
+
+
+
+
 }

@@ -3,6 +3,7 @@ package com.omergundogdu.bilgeadamecommercebackend.service.impl;
 import com.omergundogdu.bilgeadamecommercebackend.dto.request.OrderRequest;
 import com.omergundogdu.bilgeadamecommercebackend.model.Order;
 import com.omergundogdu.bilgeadamecommercebackend.model.OrderItem;
+import com.omergundogdu.bilgeadamecommercebackend.model.OrderStatus;
 import com.omergundogdu.bilgeadamecommercebackend.model.Product;
 import com.omergundogdu.bilgeadamecommercebackend.repository.OrderRepository;
 import com.omergundogdu.bilgeadamecommercebackend.repository.ProductRepository;
@@ -32,6 +33,7 @@ public class OrderServiceImpl implements OrderReadableService, OrderWriteableSer
         order.setAddress(req.getShipping().getAddress());
         order.setCity(req.getShipping().getCity());
         order.setPostalCode(req.getShipping().getPostalCode());
+        order.setStatus(OrderStatus.PENDING);
 
         String cardNumber = req.getPayment().getCardNumber();
         order.setCardLast4(cardNumber.substring(cardNumber.length() - 4));
@@ -53,10 +55,19 @@ public class OrderServiceImpl implements OrderReadableService, OrderWriteableSer
             item.setQuantity(dto.getQuantity());
             item.setPrice(dto.getPrice());
             item.setOrder(order);
+
             return item;
         }).collect(Collectors.toList());
 
         order.setItems(orderItems);
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void cancelOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sipariş bulunamadı"));
+        order.setStatus(OrderStatus.CANCELLED); // Enum veya String
         orderRepository.save(order);
     }
 
@@ -69,9 +80,10 @@ public class OrderServiceImpl implements OrderReadableService, OrderWriteableSer
     @Override
     public List<Order> getAllByUserId(Long userId) {
         return orderRepository.findAll().stream()
-                .filter(order -> order.getUserId().equals(userId))
+                .filter(order -> order.getUserId() != null && order.getUserId().equals(userId))
                 .toList();
     }
+
 
     @Override
     public List<Order> getAll() {

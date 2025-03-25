@@ -74,6 +74,7 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
+        claims.put("roles", user.getRoles().stream().map(Role::getName).toList());
 
         String token = jwtUtil.generateToken(user.getEmail(), claims);
 
@@ -94,11 +95,41 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
+        claims.put("roles", user.getRoles().stream().map(Role::getName).toList());
 
         String token = jwtUtil.generateToken(user.getEmail(), claims);
 
         return new AuthResponse(token);
     }
+
+    @Override
+    public AuthResponse adminLogin(LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ADMIN"));
+
+        if (!isAdmin) {
+            throw new RuntimeException("Yetkisiz işlem: Admin yetkisine sahip değilsiniz.");
+        }
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("roles", user.getRoles().stream().map(Role::getName).toList());
+
+        String token = jwtUtil.generateToken(user.getEmail(), claims);
+
+        return new AuthResponse(token);
+    }
+
 
 
     @Override
@@ -112,6 +143,7 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
+        claims.put("roles", user.getRoles().stream().map(Role::getName).toList());
 
         String newAccessToken = jwtUtil.generateToken(user.getEmail(), claims);
 

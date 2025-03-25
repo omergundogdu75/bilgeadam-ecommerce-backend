@@ -1,7 +1,9 @@
-server:
-  port: 8080
 
 spring:
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
   datasource:
     url: jdbc:postgresql://localhost:5432/gnd_ecommerce
     username: postgres
@@ -22,6 +24,8 @@ spring:
     serialization:
       indent_output: true
 
+
+
 logging:
   level:
     org:
@@ -34,3 +38,6 @@ logging:
 
 jwt:
   secret: e34fafbc0a503765095f524e8e8eb8af9d9d7ceb263df39ea9ce1e3b426e651e
+
+server:
+  port: 8080

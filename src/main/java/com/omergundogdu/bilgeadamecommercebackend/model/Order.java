@@ -1,5 +1,6 @@
 package com.omergundogdu.bilgeadamecommercebackend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,10 +30,15 @@ public class Order {
     private String city;
     private String postalCode;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.PENDING;
+
+
     private String cardLast4; // sadece son 4 hanesi tutulur
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> items;
 }
 

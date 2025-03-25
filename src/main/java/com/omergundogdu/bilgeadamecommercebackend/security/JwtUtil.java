@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -43,6 +44,12 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class);
+    }
+
 
     // Token'dan her türlü claim çek
     public <T> T extractClaim(String token, Function<Claims, T> resolver) {

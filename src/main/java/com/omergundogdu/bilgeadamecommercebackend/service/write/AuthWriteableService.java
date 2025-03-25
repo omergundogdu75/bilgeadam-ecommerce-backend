@@ -8,4 +8,6 @@ public interface AuthWriteableService {
     AuthResponse register(RegisterRequest request);
     AuthResponse adminRegister(RegisterRequest request);
     AuthResponse login(LoginRequest request);
+    AuthResponse adminLogin(LoginRequest request);
+
 }

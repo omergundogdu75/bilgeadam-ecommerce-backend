@@ -10,6 +10,7 @@ import com.omergundogdu.bilgeadamecommercebackend.service.read.AuthReadableServi
 import com.omergundogdu.bilgeadamecommercebackend.service.write.AuthWriteableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,12 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authWriteableService.login(request));
     }
+
+    @PostMapping("/admin-login")
+    public ResponseEntity<AuthResponse> adminEndpoint(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authWriteableService.adminLogin(request));
+    }
+
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenRefreshResponse> refresh(@RequestBody TokenRefreshRequest request) {
