@@ -26,18 +26,63 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Kullanıcı kimlik doğrulama, kayıt, giriş ve refresh token işlemlerini yöneten servis sınıfı.
+ * <p>
+ * Bu servis, kullanıcı kaydı, giriş işlemleri, admin girişi, ve token yenileme gibi işlemleri içerir.
+ * Kullanıcıların rollerine göre yetkilendirme yapılır ve güvenlik için JWT token kullanılır.
+ * </p>
+ *
+ * @author Ömer Gündoğdu
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthReadableService, AuthWriteableService {
 
+    /**
+     * Kullanıcı veritabanı işlemleri için kullanılan repository.
+     */
     private final UserRepository userRepository;
+
+    /**
+     * Rol veritabanı işlemleri için kullanılan repository.
+     */
     private final RoleRepository roleRepository;
+
+    /**
+     * Şifrelerin şifrelenmesi için kullanılan şifreleyici.
+     */
     private final PasswordEncoder passwordEncoder;
+
+    /**
+     * Kullanıcı kimlik doğrulama işlemlerini yöneten AuthenticationManager.
+     */
     private final AuthenticationManager authenticationManager;
+
+    /**
+     * Refresh token okuma işlemleri için kullanılan servis.
+     */
     private final RefreshTokenReadableService refreshTokenReadableService;
+
+    /**
+     * Refresh token yazma işlemleri için kullanılan servis.
+     */
     private final RefreshTokenWriteableService refreshTokenWriteableService;
+
+    /**
+     * JWT token işlemleri için kullanılan yardımcı sınıf.
+     */
     private final JwtUtil jwtUtil;
 
+    /**
+     * Kullanıcı kaydını gerçekleştirir.
+     * <p>
+     * Eğer kullanıcı zaten kayıtlıysa bir hata fırlatılır. Kullanıcıya "USER" rolü atanarak kayıt işlemi yapılır.
+     * </p>
+     *
+     * @param request Kayıt isteği.
+     * @return Kullanıcı kaydı başarılı ise bir AuthResponse döner.
+     */
     @Override
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -50,6 +95,15 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
         return getAuthResponse(request, userRole);
     }
 
+    /**
+     * Admin kaydını gerçekleştirir.
+     * <p>
+     * Eğer kullanıcı zaten kayıtlıysa bir hata fırlatılır. Kullanıcıya "ADMIN" rolü atanarak kayıt işlemi yapılır.
+     * </p>
+     *
+     * @param request Kayıt isteği.
+     * @return Admin kaydı başarılı ise bir AuthResponse döner.
+     */
     @Override
     public AuthResponse adminRegister(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -62,6 +116,16 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
         return getAuthResponse(request, adminRole);
     }
 
+    /**
+     * Kullanıcı kaydını gerçekleştiren metod.
+     * <p>
+     * Verilen kullanıcı bilgileri ve rol ile kullanıcı kaydedilir ve JWT token üretilir.
+     * </p>
+     *
+     * @param request Kayıt isteği.
+     * @param role Kullanıcıya atanacak rol.
+     * @return Başarılı kayıt sonrası AuthResponse döner.
+     */
     private AuthResponse getAuthResponse(RegisterRequest request, Role role) {
         User user = User.builder()
                 .email(request.getEmail())
@@ -81,6 +145,15 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
         return new AuthResponse(token);
     }
 
+    /**
+     * Kullanıcı giriş işlemini gerçekleştirir.
+     * <p>
+     * Kullanıcı doğrulama işlemi yapılır ve JWT token üretilir.
+     * </p>
+     *
+     * @param request Giriş isteği.
+     * @return Başarılı giriş sonrası AuthResponse döner.
+     */
     @Override
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -102,6 +175,15 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
         return new AuthResponse(token);
     }
 
+    /**
+     * Admin giriş işlemini gerçekleştirir.
+     * <p>
+     * Kullanıcı doğrulama işlemi yapılır, admin rolü kontrol edilir ve JWT token üretilir.
+     * </p>
+     *
+     * @param request Admin giriş isteği.
+     * @return Başarılı giriş sonrası AuthResponse döner.
+     */
     @Override
     public AuthResponse adminLogin(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -130,8 +212,15 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
         return new AuthResponse(token);
     }
 
-
-
+    /**
+     * Refresh token ile yeni bir access token oluşturur.
+     * <p>
+     * Verilen refresh token doğrulanır ve geçerliliği onaylandıktan sonra yeni bir access token üretilir.
+     * </p>
+     *
+     * @param request Refresh token yenileme isteği.
+     * @return Yeni access token ve eski refresh token'ı içeren TokenRefreshResponse döner.
+     */
     @Override
     public TokenRefreshResponse refreshToken(TokenRefreshRequest request) {
         RefreshToken refreshToken = refreshTokenReadableService.findByToken(request.getRefreshToken())

@@ -16,6 +16,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Ürün işlemlerini gerçekleştiren servis katmanıdır.
+ * Bu sınıf, ürün oluşturma, güncelleme, silme, listeleme gibi işlemleri içerir.
+ * <p>
+ * @author  Ömer GÜNDOĞDU
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductReadService, ProductWriteService {
@@ -23,9 +29,15 @@ public class ProductServiceImpl implements ProductReadService, ProductWriteServi
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
-
     private final ModelMapper modelMapper;
 
+    /**
+     * Yeni bir ürün oluşturur.
+     *
+     * @param request Ürün oluşturma isteği
+     * @return Oluşturulan ürün bilgisi
+     * @throws RuntimeException Kategori veya marka bulunamazsa
+     */
     @Override
     public ProductResponse createProduct(ProductRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -40,6 +52,14 @@ public class ProductServiceImpl implements ProductReadService, ProductWriteServi
         return modelMapper.map(productRepository.save(product), ProductResponse.class);
     }
 
+    /**
+     * Belirtilen ID'ye sahip ürünü günceller.
+     *
+     * @param id      Güncellenecek ürünün ID'si
+     * @param request Yeni ürün bilgileri
+     * @return Güncellenmiş ürün bilgisi
+     * @throws RuntimeException Ürün, kategori veya marka bulunamazsa
+     */
     @Override
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
@@ -61,11 +81,23 @@ public class ProductServiceImpl implements ProductReadService, ProductWriteServi
         return modelMapper.map(productRepository.save(product), ProductResponse.class);
     }
 
+    /**
+     * Belirtilen ID'ye sahip ürünü siler.
+     *
+     * @param id Silinecek ürünün ID'si
+     */
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
 
+    /**
+     * Belirtilen ID'ye sahip ürünü getirir.
+     *
+     * @param id Ürün ID'si
+     * @return Ürün bilgisi
+     * @throws RuntimeException Ürün bulunamazsa
+     */
     @Override
     public ProductResponse getProductById(Long id) {
         return productRepository.findById(id)
@@ -73,6 +105,11 @@ public class ProductServiceImpl implements ProductReadService, ProductWriteServi
                 .orElseThrow(() -> new RuntimeException("Ürün bulunamadı"));
     }
 
+    /**
+     * Tüm ürünleri listeler.
+     *
+     * @return Ürünlerin listesi
+     */
     @Override
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
@@ -81,6 +118,12 @@ public class ProductServiceImpl implements ProductReadService, ProductWriteServi
                 .toList();
     }
 
+    /**
+     * Belirtilen kategori ID'sine göre ürünleri listeler.
+     *
+     * @param categoryId Kategori ID'si
+     * @return Ürünlerin listesi
+     */
     @Override
     public List<ProductResponse> getProductsByCategory(Long categoryId) {
         return productRepository.findAllByCategory_Id(categoryId)
@@ -89,4 +132,3 @@ public class ProductServiceImpl implements ProductReadService, ProductWriteServi
                 .toList();
     }
 }
-

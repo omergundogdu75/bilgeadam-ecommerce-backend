@@ -41,3 +41,8 @@ jwt:
 
 server:
   port: 8080
+
+# swagger-ui custom path
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
