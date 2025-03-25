@@ -15,6 +15,7 @@ import com.omergundogdu.bilgeadamecommercebackend.service.read.AuthReadableServi
 import com.omergundogdu.bilgeadamecommercebackend.service.write.AuthWriteableService;
 import com.omergundogdu.bilgeadamecommercebackend.service.read.RefreshTokenReadableService;
 import com.omergundogdu.bilgeadamecommercebackend.service.write.RefreshTokenWriteableService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +39,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthReadableService, AuthWriteableService {
+
+    private final EmailServiceImpl emailService;
+
 
     /**
      * Kullanıcı veritabanı işlemleri için kullanılan repository.
@@ -84,13 +88,23 @@ public class AuthServiceImpl implements AuthReadableService, AuthWriteableServic
      * @return Kullanıcı kaydı başarılı ise bir AuthResponse döner.
      */
     @Override
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) throws MessagingException {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Bu email zaten kayıtlı");
         }
 
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("USER rolü bulunamadı"));
+
+        // E-posta göndermek için kullanıcı bilgilerini al
+        String email = request.getEmail();
+
+        // E-posta başlığı ve içeriği
+        String subject = "Kayıt Başarılı";
+        String text = "<h1>Hoş geldiniz!</h1><p>Kayıt işleminiz başarıyla tamamlandı.</p>";
+
+        // E-posta gönder
+        emailService.sendEmail(request.getEmail(), subject, text);
 
         return getAuthResponse(request, userRole);
     }

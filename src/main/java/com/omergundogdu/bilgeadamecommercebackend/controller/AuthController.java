@@ -8,6 +8,7 @@ import com.omergundogdu.bilgeadamecommercebackend.dto.response.TokenRefreshRespo
 import com.omergundogdu.bilgeadamecommercebackend.service.read.AuthReadableService;
 import com.omergundogdu.bilgeadamecommercebackend.service.write.AuthWriteableService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class AuthController {
      * @return JWT token bilgisi
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) throws MessagingException {
         return ResponseEntity.ok(authWriteableService.register(request));
     }
 

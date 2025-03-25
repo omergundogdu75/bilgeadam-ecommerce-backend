@@ -24,6 +24,20 @@ spring:
     serialization:
       indent_output: true
 
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: 20552789ec00f6
+    password: 5bd4da051bf994
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: sandbox.smtp.mailtrap.io
+
 
 
 logging:
@@ -46,3 +60,4 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+

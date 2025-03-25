@@ -3,6 +3,7 @@ package com.omergundogdu.bilgeadamecommercebackend.service.write;
 import com.omergundogdu.bilgeadamecommercebackend.dto.request.LoginRequest;
 import com.omergundogdu.bilgeadamecommercebackend.dto.request.RegisterRequest;
 import com.omergundogdu.bilgeadamecommercebackend.dto.response.AuthResponse;
+import jakarta.mail.MessagingException;
 
 /**
  * Kullanıcı kimlik doğrulama ve kayıt işlemleri için gerekli olan yazma (write) servis işlemlerini tanımlar.
@@ -23,7 +24,7 @@ public interface AuthWriteableService {
      * @param request Kullanıcı kayıt isteği.
      * @return Kayıt işlemi sonrası döndürülen {@link AuthResponse} nesnesi.
      */
-    AuthResponse register(RegisterRequest request);
+    AuthResponse register(RegisterRequest request) throws MessagingException;
 
     /**
      * Admin kaydeder.

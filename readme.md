@@ -17,6 +17,7 @@ Bu proje, Ömer Gündoğdu tarafından geliştirilen, Java Spring Boot backend v
 - PostgreSQL (veya alternatif veritabanları)
 - Lombok, MapStruct
 - Swagger
+- E-mail
 
 ## 📂 Proje Klasör Yapısı
 
